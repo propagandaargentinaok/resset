@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RESSET - Cotizador de evento</title>
+  <style>
+    body {
+      background: #fff;
+      color: #000;
+      font-family: sans-serif;
+      margin: 0;
+      padding: 2rem;
+      max-width: 600px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      font-weight: normal;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    select, input[type="text"] {
+      width: 100%;
+      padding: 0.5rem;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+    .total {
+      margin-top: 2rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-align: center;
+    }
+    button {
+      background: #25D366; /* Verde WhatsApp */
+      color: #fff;
+      border: none;
+      padding: 1rem 1.5rem;
+      width: 100%;
+      margin-top: 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      border-radius: 6px;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background: #1ebe57; /* Verde más oscuro al hover */
+    }
+  </style>
+</head>
+<body>
+  <h1>Resset - Cotizador Online</h1>
+
+  <!-- Campos agregados -->
+  <label for="nombre">Nombre de la persona:</label>
+  <input type="text" id="nombre" placeholder="Ingrese su nombre" />
+
+  <label for="lugar">Lugar:</label>
+  <input type="text" id="lugar" placeholder="Ingrese el lugar" />
+
+  <label for="evento">Tipo de evento:</label>
+  <select id="evento">
+    <option value="70">Listening Bar</option>
+    <option value="90">Club</option>
+    <option value="100">Privado / Corporativo</option>
+  </select>
+
+  <label for="dia">Día del evento:</label>
+  <select id="dia">
+    <option value="0">Lunes a Jueves</option>
+    <option value="20">Viernes</option>
+    <option value="30">Sábado</option>
+    <option value="10">Domingo</option>
+    <option value="50">Feriado</option>
+  </select>
+
+  <label for="horas">Duración (horas):</label>
+  <select id="horas">
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+    <option value="6">6</option>
+  </select>
+
+  <label for="setup">Setup técnico:</label>
+  <select id="setup">
+    <option value="0">Pioneer FLX4 + Macbook</option>
+    <option value="20">Pioneer DJM450 + Macbook</option>
+    <option value="30">Pioneer DJM450 + Pioneer CDJ 1000 x 2</option>
+    <option value="10">Solo CDs</option>
+    <option value="20">Solo Vinilos</option>
+  </select>
+
+  <label for="ubicacion">Ubicación:</label>
+  <select id="ubicacion">
+    <option value="0">Villa María, Córdoba.</option>
+    <option value="40">Fuera de la ciudad (hasta 100km)</option>
+    <option value="70">+100km con hospedaje</option>
+  </select>
+
+  <label>Extras:</label>
+  <input type="checkbox" id="promo" /> Gestión de anuncio en redes (+30 USD)<br />
+  <input type="checkbox" id="reel" /> Video / reel post-evento (+50 USD)<br />
+  <input type="checkbox" id="audio" /> Set grabado en audio (+30 USD)<br />
+
+  <div class="total" id="total">Total: $0 </div>
+
+  <button onclick="enviarWhatsApp()" type="button">
+    <svg xmlns="http://www.w3.org/2000/svg" 
+         width="24" height="24" fill="white" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M20.52 3.48A11.91 11.91 0 0012.007 0C5.374 0 0 5.373 0 12.007a11.96 11.96 0 001.654 6.01L0 24l5.973-1.56a11.93 11.93 0 006.034 1.567c6.633 0 12.007-5.374 12.007-12.007a11.91 11.91 0 00-3.49-8.52zm-8.51 17.46a9.09 9.09 0 01-4.615-1.33l-.33-.2-3.548.927.948-3.46-.215-.355a9.118 9.118 0 0115.734-7.987 9.09 9.09 0 01-7.49 11.4zM16.3 13.605c-.26-.13-1.535-.757-1.774-.843-.237-.086-.41-.13-.583.13-.175.26-.677.843-.83 1.016-.152.174-.305.196-.565.065-.26-.13-1.1-.405-2.098-1.295-.776-.691-1.3-1.544-1.453-1.803-.152-.26-.017-.4.115-.53.117-.117.26-.304.39-.456.13-.152.173-.26.26-.43.087-.174.043-.326-.022-.456-.065-.13-.583-1.404-.798-1.922-.21-.504-.425-.435-.583-.442l-.5-.009c-.174 0-.456.065-.695.326-.237.26-.9.88-.9 2.146 0 1.266.922 2.49 1.05 2.66.13.174 1.816 2.774 4.4 3.89.615.266 1.095.425 1.47.544.617.197 1.18.17 1.626.104.496-.07 1.535-.627 1.75-1.233.217-.607.217-1.13.152-1.233-.065-.103-.237-.174-.496-.304z"/>
+    </svg>
+    Solicitar por WhatsApp
+  </button>
+
+  <script>
+    const dolar = 1200; // Cambiar aquí el valor del dólar para actualizar todo automáticamente
+
+    function calcularTotal() {
+      let baseUSD = parseInt(document.getElementById("evento").value);
+      let diaUSD = parseInt(document.getElementById("dia").value);
+      let horas = parseInt(document.getElementById("horas").value);
+      let extraHorasUSD = horas > 2 ? (horas - 2) * 30 : 0; // Hora extra en USD
+      let setupUSD = parseInt(document.getElementById("setup").value);
+      let ubicacionUSD = parseInt(document.getElementById("ubicacion").value);
+      let promoUSD = document.getElementById("promo").checked ? 30 : 0;
+      let reelUSD = document.getElementById("reel").checked ? 50 : 0;
+      let audioUSD = document.getElementById("audio").checked ? 30 : 0;
+
+      let totalUSD = baseUSD + diaUSD + extraHorasUSD + setupUSD + ubicacionUSD + promoUSD + reelUSD + audioUSD;
+      let totalARS = totalUSD * dolar;
+
+      document.getElementById("total").innerText = `Total: $${totalARS.toLocaleString()} ARS`;
+      return totalARS;
+    }
+
+    document.querySelectorAll("select, input[type=checkbox]").forEach((el) => {
+      el.addEventListener("input", calcularTotal);
+    });
+
+    function enviarWhatsApp() {
+      let totalARS = calcularTotal();
+      let nombre = document.getElementById("nombre").value.trim() || "[Nombre no ingresado]";
+      let lugar = document.getElementById("lugar").value.trim() || "[Lugar no ingresado]";
+
+      let eventoText = document.getElementById("evento").selectedOptions[0].text;
+      let diaText = document.getElementById("dia").selectedOptions[0].text;
+      let horas = document.getElementById("horas").value;
+      let setupText = document.getElementById("setup").selectedOptions[0].text;
+      let ubicacionText = document.getElementById("ubicacion").selectedOptions[0].text;
+
+      let extras = [];
+      if (document.getElementById("promo").checked) extras.push("Gestión de anuncio en redes (+30 USD)");
+      if (document.getElementById("reel").checked) extras.push("Video / reel post-evento (+50 USD)");
+      if (document.getElementById("audio").checked) extras.push("Set grabado en audio (+30 USD)");
+      if (extras.length === 0) extras.push("Ninguno");
+
+      let mensaje = 
+`Hola!  
+Soy: ${nombre}  
+Desde: ${lugar}  
+
+Quiero solicitar un servicio de DJ con las siguientes características:  
+- Tipo de evento: ${eventoText}  
+- Día del evento: ${diaText}  
+- Duración: ${horas} horas  
+- Setup técnico: ${setupText}  
+- Ubicación: ${ubicacionText}  
+- Extras:  
+  • ${extras.join("\n  • ")}  
+
+Total estimado: $${totalARS.toLocaleString()} ARS.  
+¿Podemos coordinar?`;
+
+      let numero = "5493516659074"; // Reemplazar con tu número real con código país
+      let url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
+      window.open(url, "_blank");
+    }
+
+    calcularTotal();
+  </script>
+</body>
+</html>
